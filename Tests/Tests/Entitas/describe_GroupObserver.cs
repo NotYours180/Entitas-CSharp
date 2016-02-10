@@ -87,15 +87,21 @@ class describe_GroupObserver : nspec {
                     observerA.ClearCollectedEntities();
                     observerA.collectedEntities.should_be_empty();
                 };
+
+                it["can ToString"] = () => {
+                    observerA.ToString().should_be("GroupObserver(Group(AllOf(1)))");
+                };
             };
 
             context["reference counting"] = () => {
                 it["retains entity even after destroy"] = () => {
                     var e = pool.CreateEntity();
                     e.AddComponentA();
-                    e.OnEntityReleased += entity => this.Fail();
+                    var didRelease = 0;
+                    e.OnEntityReleased += entity => didRelease += 1;
                     pool.DestroyEntity(e);
-                    e.RefCount().should_be(1);
+                    e.retainCount.should_be(1);
+                    didRelease.should_be(0);
                 };
                 
                 it["releases entity when clearing collected entities"] = () => {
@@ -103,7 +109,7 @@ class describe_GroupObserver : nspec {
                     e.AddComponentA();
                     pool.DestroyEntity(e);
                     observerA.ClearCollectedEntities();
-                    e.RefCount().should_be(0);
+                    e.retainCount.should_be(0);
                 };
 
                 it["retains entities only once"] = () => {
@@ -111,7 +117,7 @@ class describe_GroupObserver : nspec {
                     e.AddComponentA();
                     e.ReplaceComponentA(new ComponentA());
                     pool.DestroyEntity(e);
-                    e.RefCount().should_be(1);
+                    e.retainCount.should_be(1);
                 };
             };
         };
@@ -190,6 +196,10 @@ class describe_GroupObserver : nspec {
                     entities.Count.should_be(2);
                     entities.should_contain(eA);
                     entities.should_contain(eB);
+                };
+
+                it["can ToString"] = () => {
+                    observerA.ToString().should_be("GroupObserver(Group(AllOf(1)), Group(AllOf(2)))");
                 };
             };
 

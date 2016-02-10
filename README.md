@@ -1,12 +1,19 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/Entitas-Header.png" alt="Introducing Entitas">
+    <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/Entitas-Header.png" alt="Entitas">
 </p>
+
 <p align="center">
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y9HGYPFMLG2W4">
+        <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/Donate-PayPal.gif" alt="Thank you!"></a>
+
     <a href="https://gitter.im/sschmid/Entitas-CSharp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
         <img src="https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg" alt="Join the chat at https://gitter.im/sschmid/Entitas-CSharp"></a>
 
     <a href="https://twitter.com/intent/follow?original_referer=https%3A%2F%2Fgithub.com%2Fsschmid%2FEntitas-CSharp&screen_name=s_schmid&tw_p=followbutton">
         <img src="https://img.shields.io/badge/twitter-follow%20%40s__schmid-blue.svg" alt="Twitter Follow Me"></a>
+
+    <a href="https://twitter.com/intent/follow?original_referer=https%3A%2F%2Fgithub.com%2Fsschmid%2FEntitas-CSharp&screen_name=entitas_csharp&tw_p=followbutton">
+        <img src="https://img.shields.io/badge/twitter-follow%20%40entitas__csharp-blue.svg" alt="Twitter Follow Me"></a>
 
     <a href="https://travis-ci.org/sschmid/Entitas-CSharp">
         <img src="https://travis-ci.org/sschmid/Entitas-CSharp.svg?branch=master" alt="Build Status"></a>
@@ -16,22 +23,33 @@
 </p>
 
 
-Entitas - The Entity Component System for C# and Unity
-======================================================
+The Entity Component System for C# and Unity
+============================================
 
-Entitas is a super fast Entity Component System (ECS) specifically made for C# and Unity. Internal caching and blazing fast component access makes it second to none. Several design decisions were made to work optimal in a garbage collected environment and to go easy on the garbage collector. Entitas comes with an optional code generator which radically reduces the amount of code you have to write and [makes your code read like well written prose.][clean-coders]
+Entitas is a super fast Entity Component System (ECS) specifically made for C# and Unity. Internal caching and blazing fast component access makes it second to none. Several design decisions have been made to work optimal in a garbage collected environment and to go easy on the garbage collector. Entitas comes with an optional code generator which radically reduces the amount of code you have to write and [makes your code read like well written prose.][clean-coders]
 
-[![Download Entitas-CSharp.zip][download-entitas-csharp-shield]][entitas-csharp-zip]
+<p align="left">
+    <a href="https://dev.windows.com">
+        <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/csharp.png" alt="CSharp" height="64"></a>
+    <a href="http://unity3d.com">
+        <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/WorksWithUnity.png" alt="Unity3d" height="64"></a>
+    <a href="http://unity3d.com/unite/archive/2015">
+        <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/UniteEurope2015.png" alt="Unite Europe 2015" height="64"></a>
+    <a href="http://unity3d.com/unite/archive/2015">
+        <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/UniteBoston2015.png" alt="Unite Boston 2015" height="64"></a>
+    <a href="https://www.wooga.com">
+        <img src="https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/wooga-logo.png" alt="Wooga" height="64"></a>
+</p>
 
-[![Download Entitas-Unity.zip][download-entitas-unity-shield]][entitas-unity-zip]
+---
 
-### **[» Wiki, Roadmap, Overview and example projects][wiki]**
+### **[» Wiki, Overview, Roadmap and example projects][wiki]**
 ### **[» Community: Games and Examples #madeWithEntitas][wiki-games-and-examples]**
 
 
 Watch the talk from Unite Europe 2015
 =====================================
-<a href="http://slideshare.net/sschmid/uniteeurope-2015" target="_blank">» Open the slides</a>
+<a href="http://www.slideshare.net/sschmid/uniteeurope-2015" target="_blank">» Open the slides on SlideShare</a>
 
 [![UniteEurope 2015][unite-europe-2015-video-thumbnail]][unite-europe-2015-video]
 
@@ -127,7 +145,7 @@ Contributing to Entitas
 
 The project is hosted on [GitHub][github-entitas] where you can [report issues][issues], fork the project and [submit pull requests][pulls].
 
-Entitas.sln contains all projects and tests in one solution. All Unity projects are not committed to the repository and can be generated with Unity. Open Entitas.Unity, Entitas.Unity.CodeGenerator and Entitas.Unity.VisualDebugging in Unity and generate all projects by clicking Assets -> Sync MonoDevelop Project.
+Entitas.sln contains all projects and tests in one solution. Run build.sh to copy all required Entitas source files to all Unity projects.
 
 To run the tests, navigate to the project root folder and execute runTests.sh.
 
@@ -149,14 +167,14 @@ Big shout out to [@mzaks][github-mzaks], [@cloudjubei][github-cloudjubei] and [@
 Maintainer(s)
 =============
 
-- [@sschmid][github-sschmid] | Twitter: [@s_schmid][twitter-sschmid]
+- [@sschmid][github-sschmid] | [@s_schmid][twitter-sschmid] | [@entitas_csharp][twitter-entitas_csharp]
 
 
 Different language?
 ===================
 
 Entitas is also available in
-- [Swift](https://github.com/mzaks/Entitas)
+- [Swift](https://github.com/mzaks/Entitas-Swift)
 - [Objective-C](https://github.com/wooga/entitas)
 - [Go](https://github.com/wooga/go-entitas)
 - [Clojure](https://github.com/mhaemmerle/entitas-clj)
@@ -165,8 +183,6 @@ Entitas is also available in
 
 
 [clean-coders]: https://cleancoders.com "Clean Coders"
-[download-entitas-csharp-shield]: https://img.shields.io/badge/download-entitas.csharp-blue.svg "Download Entitas-CSharp.zip"
-[download-entitas-unity-shield]: https://img.shields.io/badge/download-entitas.unity-blue.svg "Download Entitas-Unity.zip"
 [entitas-csharp-zip]: https://github.com/sschmid/Entitas-CSharp/blob/master/bin/Entitas-CSharp.zip?raw=true "Download Entitas-CSharp.zip"
 [entitas-unity-zip]: https://github.com/sschmid/Entitas-CSharp/blob/master/bin/Entitas-Unity.zip?raw=true "Download Entitas-Unity.zip"
 
@@ -177,7 +193,7 @@ Entitas is also available in
 [wiki-example-projects]: https://github.com/sschmid/Entitas-CSharp/wiki/Example-projects "Wiki - Example Projects"
 [wiki-games-and-examples]: https://github.com/sschmid/Entitas-CSharp/wiki/Games-and-Examples "Wiki - Games and Examples #madeWithEntitas"
 
-[unite-europe-2015-video-thumbnail]: https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/UniteEurope-2015.png "Video: Watch the Entitas Talk at Unite Europe 2015"
+[unite-europe-2015-video-thumbnail]: https://raw.githubusercontent.com/sschmid/Entitas-CSharp/develop/Readme/Images/UniteEurope2015-Video.png "Video: Watch the Entitas Talk at Unite Europe 2015"
 [unite-europe-2015-video]: http://buff.ly/1KtKlm6 "Video: Watch the Entitas Talk at Unite Europe 2015"
 
 [github-entitas]: https://github.com/sschmid/Entitas-CSharp "sschmid/Entitas-CSharp"
@@ -186,6 +202,7 @@ Entitas is also available in
 [pulls]: https://github.com/sschmid/Entitas-CSharp/pulls "Pull Requests"
 
 [twitter-sschmid]: https://twitter.com/s_schmid "s_schmid on Twitter"
+[twitter-entitas_csharp]: https://twitter.com/entitas_csharp "entitas_csharp on Twitter"
 
 [github-sschmid]: https://github.com/sschmid "@sschmid"
 [github-mzaks]: https://github.com/mzaks "@mzaks"

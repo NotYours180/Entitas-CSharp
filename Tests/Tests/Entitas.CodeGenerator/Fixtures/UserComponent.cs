@@ -4,47 +4,51 @@ using System;
 
 [SingleEntity]
 public class UserComponent : IComponent {
+    public static ComponentInfo componentInfo { 
+        get {
+            return new ComponentInfo(
+                typeof(UserComponent).ToCompilableString(),
+                new [] {
+                    new ComponentFieldInfo("System.DateTime", "timestamp"),
+                    new ComponentFieldInfo("bool", "isLoggedIn")
+                },
+                new string[0],
+                true,
+                "is",
+                true,
+                true
+            );
+        }
+    }
+
     public DateTime timestamp;
     public bool isLoggedIn;
     public static string extensions =
-        @"using System.Collections.Generic;
-
-namespace Entitas {
+        @"namespace Entitas {
     public partial class Entity {
         public UserComponent user { get { return (UserComponent)GetComponent(ComponentIds.User); } }
 
         public bool hasUser { get { return HasComponent(ComponentIds.User); } }
 
-        static readonly Stack<UserComponent> _userComponentPool = new Stack<UserComponent>();
-
-        public static void ClearUserComponentPool() {
-            _userComponentPool.Clear();
-        }
-
         public Entity AddUser(System.DateTime newTimestamp, bool newIsLoggedIn) {
-            var component = _userComponentPool.Count > 0 ? _userComponentPool.Pop() : new UserComponent();
+            var componentPool = GetComponentPool(ComponentIds.User);
+            var component = (UserComponent)(componentPool.Count > 0 ? componentPool.Pop() : new UserComponent());
             component.timestamp = newTimestamp;
             component.isLoggedIn = newIsLoggedIn;
             return AddComponent(ComponentIds.User, component);
         }
 
         public Entity ReplaceUser(System.DateTime newTimestamp, bool newIsLoggedIn) {
-            var previousComponent = hasUser ? user : null;
-            var component = _userComponentPool.Count > 0 ? _userComponentPool.Pop() : new UserComponent();
+            var componentPool = GetComponentPool(ComponentIds.User);
+            var component = (UserComponent)(componentPool.Count > 0 ? componentPool.Pop() : new UserComponent());
             component.timestamp = newTimestamp;
             component.isLoggedIn = newIsLoggedIn;
             ReplaceComponent(ComponentIds.User, component);
-            if (previousComponent != null) {
-                _userComponentPool.Push(previousComponent);
-            }
             return this;
         }
 
         public Entity RemoveUser() {
-            var component = user;
-            RemoveComponent(ComponentIds.User);
-            _userComponentPool.Push(component);
-            return this;
+            return RemoveComponent(ComponentIds.User);;
         }
     }
 
@@ -57,7 +61,8 @@ namespace Entitas {
 
         public Entity SetUser(System.DateTime newTimestamp, bool newIsLoggedIn) {
             if (hasUser) {
-                throw new SingleEntityException(Matcher.User);
+                throw new EntitasException(""Could not set user!\n"" + this + "" already has an entity with UserComponent!"",
+                    ""You should check if the pool already has a userEntity before setting it or use pool.ReplaceUser()."");
             }
             var entity = CreateEntity();
             entity.AddUser(newTimestamp, newIsLoggedIn);

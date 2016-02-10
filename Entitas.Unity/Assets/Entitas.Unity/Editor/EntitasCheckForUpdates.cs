@@ -13,11 +13,11 @@ namespace Entitas.Unity {
         const string URL_GITHUB_API_LATEST_RELEASE = "https://api.github.com/repos/sschmid/Entitas-CSharp/releases/latest";
         const string URL_GITHUB_RELEASES = "https://github.com/sschmid/Entitas-CSharp/releases";
 
-        [MenuItem("Entitas/Check for Updates...", false, 0)]
+        [MenuItem("Entitas/Check for Updates...", false, 2)]
         public static void CheckForUpdates() {
             var response = requestLatestRelease();
             var remoteVersion = parseVersion(response);
-            var localVersion = getLocalVersion();
+            var localVersion = GetLocalVersion();
 
             displayUpdateInfo(remoteVersion, localVersion);
         }
@@ -37,11 +37,11 @@ namespace Entitas.Unity {
         }
 
         static string parseVersion(string response) {
-            const string VERSION_PATTERN = @"(?<=""tag_name"":"").*?(?="")";
-            return Regex.Match(response, VERSION_PATTERN).Value;
+            const string versionPattern = @"(?<=""tag_name"":"").*?(?="")";
+            return Regex.Match(response, versionPattern).Value;
         }
 
-        static string getLocalVersion() {
+        public static string GetLocalVersion() {
             var files = Directory.GetFiles(Application.dataPath, "entitas_version", SearchOption.AllDirectories);
             if (files.Length != 1) {
                 Debug.Log("Couldn't locate file entitas_version");

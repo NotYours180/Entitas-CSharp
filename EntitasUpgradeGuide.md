@@ -1,3 +1,42 @@
+# Entitas 0.28.0 upgrade guide
+
+If you're using Entitas with Unity, please open the Entitas preferences and make
+sure that all your desired code generators are activated.
+Due to some code generator renamings the ComponentIndicesGeneratoris inactive.
+
+The SystemsGenerator has been removed. Please use `pool.CreateSystem<MySystem>()` instead.
+
+
+
+# Entitas 0.27.0 upgrade guide
+
+If you're using Entitas with Unity, please open the Entitas preferences and make
+sure that all your desired code generators are activated.
+Due to some code generator renamings the ComponentLookupGenerator and
+the ComponentsGenerator are inactive. Activate them (if desired) and generate.
+
+
+# Entitas 0.26.0 upgrade guide
+Use the command line tool `MigrationAssistant.exe` to automatically fix compile errors.
+After that generate again.
+
+```
+$ mono MigrationAssistant.exe
+usage:
+[-l]             - print all available versions
+[version] [path] - apply migration of version [version] to source files located at [path]
+
+$ mono MigrationAssistant.exe -l
+0.18.0 - Migrates IReactiveSystem GetXyz methods to getters
+0.19.0 - Migrates IReactiveSystem.Execute to accept List<Entity>
+0.22.0 - Migrates IReactiveSystem to combine trigger and eventTypes to TriggerOnEvent
+0.26.0 - Deactivates code to prevent compile erros
+
+// Example from Math-One example project
+$ mono MigrationAssistant.exe 0.26.0 /Path/To/Project/Generated/
+```
+
+
 # Entitas 0.24.0 upgrade guide
 To fix the compile errors after updating to Entitas 0.24.0, delete in `Pools.cs`
 

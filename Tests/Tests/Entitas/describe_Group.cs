@@ -17,7 +17,7 @@ class describe_Group : nspec {
     void assertContainsNot(Entity entity) {
         _groupA.count.should_be(0);
         _groupA.GetEntities().should_be_empty();
-       _groupA.ContainsEntity(entity).should_be_false();
+        _groupA.ContainsEntity(entity).should_be_false();
     }
 
     void when_created() {
@@ -89,11 +89,29 @@ class describe_Group : nspec {
             _groupA.GetSingleEntity().should_be_same(eA1);
         };
 
-        it["throws when attempting to get single entity and multiple matching entities exist"] = expect<SingleEntityException>(() => {
+        it["throws when attempting to get single entity and multiple matching entities exist"] = expect<GroupSingleEntityException>(() => {
             handleSilently(eA1);
             handleSilently(eA2);
             _groupA.GetSingleEntity();
         });
+
+        it["removes all event handlers"] = () => {
+            _groupA.OnEntityAdded += (group, entity, index, component) => this.Fail();
+            _groupA.OnEntityRemoved += (group, entity, index, component) => this.Fail();
+            _groupA.OnEntityUpdated += (group, entity, index, previousComponent, newComponent) => this.Fail();
+
+            _groupA.RemoveAllEventHandlers();
+
+            handleAddEA(eA1);
+
+            var cA = eA1.GetComponentA();
+            eA1.RemoveComponentA();
+            handleRemoveEA(eA1, cA);
+
+            eA1.AddComponentA();
+            handleAddEA(eA1);
+            updateEA(eA1, Component.A);
+        };
 
         context["events"] = () => {
             var didDispatch = 0;
@@ -268,16 +286,16 @@ class describe_Group : nspec {
         context["reference counting"] = () => {
 
             it["retains matched entity"] = () => {
-                eA1.RefCount().should_be(0);
+                eA1.retainCount.should_be(0);
                 handleSilently(eA1);
-                eA1.RefCount().should_be(1);
+                eA1.retainCount.should_be(1);
             };
 
             it["releases removed entity"] = () => {
                 handleSilently(eA1);
                 eA1.RemoveComponentA();
                 handleSilently(eA1);
-                eA1.RefCount().should_be(0);
+                eA1.retainCount.should_be(0);
             };
 
             it["invalidates entitiesCache (silent mode)"] = () => {
@@ -325,13 +343,13 @@ class describe_Group : nspec {
                 var didDispatch = 0;
                 _groupA.OnEntityRemoved += (group, entity, index, component) => {
                     didDispatch += 1;
-                    entity.RefCount().should_be(1);
+                    entity.retainCount.should_be(1);
                 };
                 eA1.RemoveComponentA();
                 handleRemoveEA(eA1, Component.A);
 
                 didDispatch.should_be(1);
-                eA1.RefCount().should_be(0);
+                eA1.retainCount.should_be(0);
             };
         };
 

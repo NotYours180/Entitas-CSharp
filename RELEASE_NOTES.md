@@ -1,3 +1,194 @@
+# 0.28.2
+
+##### Entitas
+- Added ReactiveSystem destructor to prevent memory leaks
+- Added GroupObserver destructor to prevent memory leaks
+
+##### Entitas.Unity.VisualDebugging
+- EntityInspector now supports dropping Unity.Object into fields that are null
+
+![Entitas.Unity.VisualDebugging-DefaultInstanceCreator](https://cloud.githubusercontent.com/assets/233700/12884636/ea8c468c-ce5f-11e5-91a9-0fdf83de7252.png)
+
+- UI tweaks
+
+
+# 0.28.1
+
+##### Entitas.Unity
+- Added "Script Call Optimization" to Entitas Preferences Window
+- Added priority to IEntitasPreferencesDrawer
+- Tweaked UI
+
+![Entitas.Unity-ScriptCallOptimization](https://cloud.githubusercontent.com/assets/233700/12832387/e893b3ec-cb99-11e5-8ccb-d3478ca0c6dc.png)
+
+##### Entitas.Unity.VisualDebugging
+- Added toggle to Entitas Preferences to enable or disable Visual Debugging
+- Tweaked UI
+
+![Entitas.Unity.VisualDebugging-Toggle](https://cloud.githubusercontent.com/assets/233700/12832391/ec74d2e8-cb99-11e5-87b3-f76e2e9ea58d.png)
+
+
+# 0.28.0
+
+##### Breaking changes
+Please follow the [Entitas upgrade guide](https://github.com/sschmid/Entitas-CSharp/blob/master/EntitasUpgradeGuide.md)
+
+##### Entitas
+- Added documentation (#55)
+- Added an object pool for components (#58)
+- Added pool.ClearComponentPool(index) and pool.ClearComponentPools()
+- Added ENTITAS_FAST_AND_UNSAFE compiler flag. When set it will speed up e.Retain() and e.Release() (#59)
+
+##### Entitas.CodeGenerator
+- Generated component extensions are now reusing components using a component object pool when destroying entities (#58)
+- Added tests for testing the logic of generated files
+- Decoupling code generation logic by adding Code Generator Intermediate Format (#62)
+- Added TypeReflectionProvider
+- Supporting components with namespace
+- Simplified linq expressions
+- Removed generated systems
+- The Code Generator is not depending on Entitas anymore
+
+##### Entitas.CodeGenerator.TypeReflection
+- Added Entitas.CodeGenerator.TypeReflection project
+
+##### Entitas.Unity
+- Added `keys` and `values` getter to Properties
+
+##### Entitas.Unity.VisualDebugging
+- Added system search field to DebugSystemsInspector
+- UI tweaks and performance optimizations
+- Fixed logging wrong system stats
+- Added header image and current version label to Entitas Preferences Window
+
+![Entitas.Unity.Visualdebugging-preferences](https://cloud.githubusercontent.com/assets/233700/12795069/a13e5b6e-cab8-11e5-937d-870790e2bfe1.png)
+
+##### Entitas.Unity.Migration
+- Added Entitas.Unity.Migration which provides an easy way to migrate source files
+- Added header image and current version label to Entitas Migration Window
+
+![Entitas.Unity.Migration](https://cloud.githubusercontent.com/assets/233700/12795026/6acf24b4-cab8-11e5-90e3-98a103676d50.png)
+
+##### Other
+- Removed redundant files and gitignored Entitas in all Unity projects (#63)
+- Removed Unity projects from Entitas.sln
+- Removed warnings
+
+
+# 0.27.0
+
+##### Note
+If you're using Entitas with Unity, please open the Entitas preferences and make sure that all your desired code generators are activated. Due to some code generator renamings the ComponentLookupGenerator and the ComponentsGenerator are inactive. Activate them (if desired) and generate.
+
+##### Entitas
+- Added `pool.Reset()` which clears all groups, destroys all entities and resets creationIndex
+
+##### Entitas.CodeGenerator
+- Renamed some code generators
+- Added `CustomPrefixAttribute` to support custom prefixes for flag components
+```
+[CustomPrefix("flag")]
+public class DestroyComponent : IComponent {
+}
+
+// default
+entity.isDestroy = true;
+
+// with CustomPrefixAttribute
+entity.flagDestroy = true;
+```
+
+##### Entitas.Unity
+- Added "Feedback" menu item to report bugs, request features, join the chat, read the wiki and donate
+
+##### Entitas.Unity.CodeGenerator
+- Removing invalid code generator names from Entitas.properties
+
+##### Entitas.Unity.VisualDebugging
+- Lots of UI tweaks
+- Added toggle to sort systems by execution duration
+- Added toggle to hide empty systems
+- ReactiveSystems are highlighted with a white font color
+- Added Clear Groups Button
+- Added Entity Release Button
+- Splitted systems list into initialize and execute systems and visualizing them separately
+- Improved stepper UI
+
+##### Entitas.Migration
+- All migrations now contain information about on which folder they should be applied
+
+```
+0.26.0
+  - Deactivates code to prevent compile erros
+  - Use on folder, where generated files are located
+```
+
+##### Other
+- Added Commands.GenerateProjectFiles and using it in build.sh
+- Updated build.sh and build_commands.sh to include latest MigrationAssistant.exe
+
+
+# 0.26.1
+
+##### Breaking changes
+Please follow the [Entitas upgrade guide](https://github.com/sschmid/Entitas-CSharp/blob/master/EntitasUpgradeGuide.md)
+
+
+# 0.26.0
+
+##### General
+- Updated projects to Unity 5.3
+- Improved all error messages and added hints
+- Changed and applied policy.mdpolicy to all sources
+
+##### Entitas.Unity
+- Moved Entitas Preferences to its own Editor Window
+
+![Entitas.Unity - Entitas Preferences Window](https://cloud.githubusercontent.com/assets/233700/12222689/9492611a-b7c3-11e5-880d-c4cc83c9234e.png)
+
+##### Other
+- Added runTests.bat for running test on windows (#49)
+- Updated license
+
+
+# 0.25.0
+
+##### Entitas
+- Improved AERC performance
+- Added group.RemoveAllEventHandlers()
+- Added pool.ClearGroups() to remove all groups and remove all their event handlers
+- Added pool.ResetCreationIndex()
+- Throwing exception when there are retained entities and pool.DestroyAllEntities() is called
+- Renamed entity.refCount to entity.retainCount
+
+##### Entitas.Unity.VisualDebugging
+- Fixed creating entities
+- Showing warning when there are retained entities
+
+##### Other
+- Added UnityTests project with Unity Test Tools to fix a Unity specific HashSet bug
+
+
+# 0.24.6
+
+##### Entitas
+- Changed entity.Retain() to accept an owner object
+
+##### Entitas.Unity.VisualDebugging
+- Added VisualDebugging support for displaying owners of entities
+
+![Entitas.Unity.VisualDebugging-RefrenceCount](https://cloud.githubusercontent.com/assets/233700/11320810/0463033a-90a7-11e5-931b-5074b50d7e62.png)
+
+
+# 0.24.5
+
+##### Entitas
+- Fixed dispatching group events after all groups are updated
+
+##### Entitas.CodeGenerator
+- Supporting ENTITAS_DISABLE_VISUAL_DEBUGGING compiler flag
+
+
 # 0.24.4
 
 ##### Entitas

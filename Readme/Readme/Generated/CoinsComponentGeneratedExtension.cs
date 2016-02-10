@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using Entitas;
 
 namespace Entitas {
@@ -8,34 +6,23 @@ namespace Entitas {
 
         public bool hasCoins { get { return HasComponent(MetaComponentIds.Coins); } }
 
-        static readonly Stack<CoinsComponent> _coinsComponentPool = new Stack<CoinsComponent>();
-
-        public static void ClearCoinsComponentPool() {
-            _coinsComponentPool.Clear();
-        }
-
         public Entity AddCoins(int newCount) {
-            var component = _coinsComponentPool.Count > 0 ? _coinsComponentPool.Pop() : new CoinsComponent();
+            var componentPool = GetComponentPool(MetaComponentIds.Coins);
+            var component = (CoinsComponent)(componentPool.Count > 0 ? componentPool.Pop() : new CoinsComponent());
             component.count = newCount;
             return AddComponent(MetaComponentIds.Coins, component);
         }
 
         public Entity ReplaceCoins(int newCount) {
-            var previousComponent = hasCoins ? coins : null;
-            var component = _coinsComponentPool.Count > 0 ? _coinsComponentPool.Pop() : new CoinsComponent();
+            var componentPool = GetComponentPool(MetaComponentIds.Coins);
+            var component = (CoinsComponent)(componentPool.Count > 0 ? componentPool.Pop() : new CoinsComponent());
             component.count = newCount;
             ReplaceComponent(MetaComponentIds.Coins, component);
-            if (previousComponent != null) {
-                _coinsComponentPool.Push(previousComponent);
-            }
             return this;
         }
 
         public Entity RemoveCoins() {
-            var component = coins;
-            RemoveComponent(MetaComponentIds.Coins);
-            _coinsComponentPool.Push(component);
-            return this;
+            return RemoveComponent(MetaComponentIds.Coins);;
         }
     }
 
@@ -48,7 +35,8 @@ namespace Entitas {
 
         public Entity SetCoins(int newCount) {
             if (hasCoins) {
-                throw new SingleEntityException(MetaMatcher.Coins);
+                throw new EntitasException("Could not set coins!\n" + this + " already has an entity with CoinsComponent!",
+                    "You should check if the pool already has a coinsEntity before setting it or use pool.ReplaceCoins().");
             }
             var entity = CreateEntity();
             entity.AddCoins(newCount);

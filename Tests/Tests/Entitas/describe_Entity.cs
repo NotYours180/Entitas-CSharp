@@ -42,7 +42,21 @@ class describe_Entity : nspec {
 
         context["initial state"] = () => {
 
-            it["throws when attempting to get component of type which hasn't been added"] = expect<EntityDoesNotHaveComponentException>(() => {
+            it["has default PoolMetaData"] = () => {
+                e.poolMetaData.poolName.should_be("No Pool");
+                e.poolMetaData.componentNames.Length.should_be(CID.NumComponents);
+                for (int i = 0; i < e.poolMetaData.componentNames.Length; i++) {
+                    e.poolMetaData.componentNames[i].should_be(i.ToString());
+                }
+            };
+
+            it["has custom PoolMetaData when set"] = () => {
+                var poolMetaData = new PoolMetaData(null, null);
+                e = new Entity(0, null, poolMetaData);
+                e.poolMetaData.should_be_same(poolMetaData);
+            };
+
+            it["throws when attempting to get component at index which hasn't been added"] = expect<EntityDoesNotHaveComponentException>(() => {
                 e.GetComponentA();
             });
 
@@ -54,15 +68,15 @@ class describe_Entity : nspec {
                 e.GetComponentIndices().should_be_empty();
             };
 
-            it["doesn't have component of type when no component of that type was added"] = () => {
+            it["doesn't have component at index when no component was added"] = () => {
                 e.HasComponentA().should_be_false();
             };
 
-            it["doesn't have components of types when no components of these types were added"] = () => {
+            it["doesn't have components at indices when no components were added"] = () => {
                 e.HasComponents(_indicesA).should_be_false();
             };
 
-            it["doesn't have any components of types when no components of these types were added"] = () => {
+            it["doesn't have any components at indices when no components were added"] = () => {
                 e.HasAnyComponent(_indicesA).should_be_false();
             };
 
@@ -75,13 +89,22 @@ class describe_Entity : nspec {
                 assertHasComponentA(e);
             };
 
-            it["throws when attempting to remove a component of type which hasn't been added"] = expect<EntityDoesNotHaveComponentException>(() => {
+            it["throws when attempting to remove a component at index which hasn't been added"] = expect<EntityDoesNotHaveComponentException>(() => {
                 e.RemoveComponentA();
             });
 
             it["replacing a non existing component adds component"] = () => {
                 e.ReplaceComponentA(Component.A);
                 assertHasComponentA(e);
+            };
+
+            it["gets component pool"] = () => {
+                var componentPool = e.GetComponentPool(CID.ComponentA);
+                componentPool.Count.should_be(0);
+            };
+
+            it["gets same component pool instance"] = () => {
+                e.GetComponentPool(CID.ComponentA).should_be_same(e.GetComponentPool(CID.ComponentA));
             };
         };
 
@@ -90,7 +113,7 @@ class describe_Entity : nspec {
                 e.AddComponentA();
             };
 
-            it["throws when adding a component of the same type twice"] = expect<EntityAlreadyHasComponentException>(() => {
+            it["throws when adding a component at the same index twice"] = expect<EntityAlreadyHasComponentException>(() => {
                 e.AddComponentA();
                 e.AddComponentA();
             });
@@ -99,7 +122,7 @@ class describe_Entity : nspec {
                 e.RemoveComponent(CID.ComponentA).should_be_same(e);
             };
 
-            it["removes a component of type"] = () => {
+            it["removes a component at index"] = () => {
                 e.RemoveComponentA();
                 assertHasNotComponentA(e);
             };
@@ -114,11 +137,11 @@ class describe_Entity : nspec {
                 assertHasComponentA(e, newComponentA);
             };
 
-            it["doesn't have components of types when not all components of these types were added"] = () => {
+            it["doesn't have components at indices when not all components were added"] = () => {
                 e.HasComponents(_indicesAB).should_be_false();
             };
 
-            it["has any components of types when any component of these types was added"] = () => {
+            it["has any components at indices when any component was added"] = () => {
                 e.HasAnyComponent(_indicesAB).should_be_true();
             };
 
@@ -145,7 +168,7 @@ class describe_Entity : nspec {
                     e.HasComponentB().should_be_true();
                 };
 
-                it["has components of types when all components of these types were added"] = () => {
+                it["has components at indices when all components were added"] = () => {
                     e.HasComponents(_indicesAB).should_be_true();
                 };
 
@@ -159,7 +182,8 @@ class describe_Entity : nspec {
 
                 it["can ToString"] = () => {
                     e.AddComponent(0, new SomeComponent());
-                    e.ToString().should_be("Entity_0(Some, ComponentA, ComponentB)");
+                    e.Retain(this); 
+                    e.ToString().should_be("Entity_0(1)(Some, ComponentA, ComponentB)");
                 };
             };
         };
@@ -291,27 +315,49 @@ class describe_Entity : nspec {
 
         context["reference counting"] = () => {
             it["retains entity"] = () => {
-                e.RefCount().should_be(0);
-                e.Retain();
-                e.RefCount().should_be(1);
+                e.retainCount.should_be(0);
+                e.Retain(this);
+                e.retainCount.should_be(1);
             };
 
             it["releases entity"] = () => {
-                e.Retain();
-                e.Release();
-                e.RefCount().should_be(0);
+                e.Retain(this);
+                e.Release(this);
+                e.retainCount.should_be(0);
             };
 
-            it["throws when releasing more than it has been retained"] = expect<EntityIsAlreadyReleasedException>(() => {
-                e.Retain();
-                e.Release();
-                e.Release();
+            it["throws when releasing more than it has been retained"] = expect<EntityIsNotRetainedByOwnerException>(() => {
+                e.Retain(this);
+                e.Release(this);
+                e.Release(this);
+            });
+
+            it["throws when retaining twice with same owner"] = expect<EntityIsAlreadyRetainedByOwnerException>(() => {
+                var owner1 = new object();
+                e.Retain(owner1);
+                e.Retain(owner1);
+            });
+
+            it["throws when releasing with unknown owner"] = expect<EntityIsNotRetainedByOwnerException>(() => {
+                var owner = new object();
+                var unknownOwner = new object();
+                e.Retain(owner);
+                e.Release(unknownOwner);
+            });
+
+            it["throws when releasing with owner which doesn't retain entity anymore"] = expect<EntityIsNotRetainedByOwnerException>(() => {
+                var owner1 = new object();
+                var owner2 = new object();
+                e.Retain(owner1);
+                e.Retain(owner2);
+                e.Release(owner2);
+                e.Release(owner2);
             });
 
             context["events"] = () => {
                 it["doesn't dispatch OnEntityReleased when retaining"] = () => {
                     e.OnEntityReleased += entity => this.Fail();
-                    e.Retain();
+                    e.Retain(this);
                 };
 
                 it["dispatches OnEntityReleased when retain and release"] = () => {
@@ -320,8 +366,8 @@ class describe_Entity : nspec {
                         didDispatch += 1;
                         entity.should_be_same(e);
                     };
-                    e.Retain();
-                    e.Release();
+                    e.Retain(this);
+                    e.Release(this);
                 };
             };
         };
